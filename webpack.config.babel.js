@@ -16,9 +16,7 @@ let plugins = [
 const loaderOptionsConfig = {
   options: {
     sassLoader: {
-      includePaths: [
-        './node_modules'
-      ]
+      includePaths: ['./node_modules']
     }
   }
 };
@@ -38,7 +36,7 @@ if (env === 'production') {
         dead_code: true,
         evaluate: true,
         if_return: true,
-        join_vars: true,
+        join_vars: true
       },
       mangle: {
         screw_ie8: true
@@ -50,9 +48,7 @@ if (env === 'production') {
     })
   );
 } else {
-  plugins = plugins.concat([
-    new webpack.HotModuleReplacementPlugin()
-  ]);
+  plugins = plugins.concat([new webpack.HotModuleReplacementPlugin()]);
   devConfig.devtool = 'cheap-module-source-map';
   devConfig.entry = [
     require.resolve('react-dev-utils/webpackHotDevClient'),
@@ -74,36 +70,48 @@ if (env === 'production') {
 
 plugins.push(new webpack.LoaderOptionsPlugin(loaderOptionsConfig));
 
-export default Object.assign({
-  entry: './src/js/index.js',
-  output: {
-    path: path.resolve('./dist'),
-    filename: 'index.js',
-    publicPath: '/'
-  },
-  resolve: {
-    extensions: ['.js', '.scss', '.css', '.json']
-  },
-  plugins,
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js/,
-        exclude: /node_modules/,
-        loader: 'babel-loader'
+export default Object.assign(
+  {
+    entry: './src/js/index.js',
+    output: {
+      path: path.resolve('./dist'),
+      filename: 'index.js',
+      publicPath: '/'
+    },
+    resolve: {
+      alias: {
+        components: path.resolve(__dirname, 'src/js/components'),
+        containers: path.resolve(__dirname, 'src/js/containers'),
+        models: path.resolve(__dirname, 'src/js/models'),
+        pages: path.resolve(__dirname, 'src/js/pages'),
+        stores: path.resolve(__dirname, 'src/js/stores'),
+        utils: path.resolve(__dirname, 'src/js/utils')
       },
-      {
-        test: /\.scss$/,
-        use: [
-          { loader: 'file-loader', options: { name: '[name].css' } },
-          { loader: 'sass-loader', options: { outputStyle: 'compressed' } }
-        ]
-      }
-    ]
-  }
-}, devConfig);
+      extensions: ['.js', '.scss', '.css', '.json']
+    },
+    plugins,
+    node: {
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty'
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js/,
+          exclude: /node_modules/,
+          loader: 'babel-loader'
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' },
+            { loader: 'sass-loader', options: { outputStyle: 'compressed' } }
+          ]
+        }
+      ]
+    }
+  },
+  devConfig
+);
